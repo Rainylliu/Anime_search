@@ -13,7 +13,7 @@ const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
 app.get('/', (req, res) => {
-  res.sendFile(join(_dirname, 'public','index.html'));
+  res.sendFile(join(_dirname, 'index.html'));
 });
 
 app.get('/search', async (req, res) => {
