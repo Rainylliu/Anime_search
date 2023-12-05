@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Search</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Anime Search:</h1>
+        <div class="myForm" id="myForm">
+            <input type="text" id="NameInput" placeholder="Enter the name of an anime">
+            <button id="search">Get</button>
+        </div>
+        <div id="animeInfoContainer">
+          <div id="animeDescription"></div>
+          <br>
+          <img id="animeImage" src="" alt="AnimeImage">
+        </div>
+    </div>
+</body>
+</html>
+<style>
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
+}
+
+.container {
+  max-width: 600px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.myForm {
+  margin-bottom: 1rem;
+}
+
+button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+#animeInfoContainer {
+  display: none; /* Initially hide the container */
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  background-color: #fff;
+}
+
+#animeDescription {
+  margin-bottom: 1rem;
+}
+
+#animeImage {
+  max-width: 100%;
+  height: auto;
+}
+
+#animeRating {
+  margin-top: 1rem;
+}
+
+#ratingStars {
+  font-size: 24px;
+}
+
+.star {
+  cursor: pointer;
+}
+
+.star:hover,
+.star.active {
+  color: gold;
+}
+
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const NameInput = document.getElementById('NameInput');
+  const searchButton = document.getElementById('search');
+  const animeInfoContainer = document.getElementById('animeInfoContainer');
+
+  searchButton.addEventListener('click', function () {
+    // Fetch data from the anime search API
+    fetch(`/search?name=${encodeURIComponent(NameInput.value)}`)
+      .then(response => response.json())
+      .then(data => {
+        animeInfoContainer.style.display = 'block'; 
+        animeInfoContainer.innerHTML = `
+          <h2>${data.title}</h2>
+          <img src="${data.picture}" alt="${data.title}">
+          <p>${data.synopsis}</p>`;
+
+        // Display the rating box
+        const ratingBox = document.createElement('div');
+        ratingBox.id = 'animeRating';
+        ratingBox.innerHTML = `
+          <p>Rate this anime:</p>
+          <div id="ratingStars">
+            <span class="star" data-value="1">&#9733;</span>
+            <span class="star" data-value="2">&#9733;</span>
+            <span class="star" data-value="3">&#9733;</span>
+            <span class="star" data-value="4">&#9733;</span>
+            <span class="star" data-value="5">&#9733;</span>
+          </div>`;
+        animeInfoContainer.appendChild(ratingBox);
+
+        const ratingStars = document.querySelectorAll('#ratingStars .star');
+
+        // Add event listeners for rating stars
+        ratingStars.forEach(star => {
+          star.addEventListener('click', function () {
+            const rating = parseInt(star.getAttribute('data-value'));
+
+            // Optionally, send the rating to the server here
+            // Example: sendRatingToServer(data.id, rating);
+
+            // Update the UI to show the selected rating
+            ratingStars.forEach(s => s.classList.remove('active'));
+            for (let i = 0; i < rating; i++) {
+              ratingStars[i].classList.add('active');
+            }
+          });
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+        animeInfoContainer.innerHTML = 'Error fetching data. Please try again later.';
+      });
+  });
+});
+
+</script>
