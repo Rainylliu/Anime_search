@@ -10,7 +10,7 @@
     <div class="container">
         <h1>Anime Search:</h1>
         <div class="myForm" id="myForm">
-            <input type="text" id="NameInput" placeholder="Enter the name of an anime">
+            <input id="NameInput" placeholder="Enter the name of an anime">
             <button id="search">Get</button>
         </div>
         <div id="animeInfoContainer">
@@ -28,38 +28,65 @@ body {
   font-size: 25px;
   margin: 0;
   padding: 0;
-  background-color: #f0f0f0;
+  background-color: #DCDCDC;
+}
+h1,h2,h3 {
+  color: #2F2F2F;
+}
+p {
+  text-align: justify;
+  color: #2F2F2F;
 }
 
 .container {
-  max-width: 600px;
+  width: 80%;
   margin: 2rem auto;
   text-align: center;
 }
-
-.myForm {
-  margin-bottom: 1rem;
+input::placeholder {
+  font-family: 'Cabin Sketch', sans-serif;
+  font-size: 20px;
+  color: #2F2F2F;
 }
 
+.myForm {
+  margin-bottom: 1.5rem;
+  font-family: 'Cabin Sketch', sans-serif;
+  font-size: 20px;
+  color: #9F9F9F;
+}
+input {
+  width: 20rem;
+  height: 2.55rem;
+  border: 2.5px solid #2f2f2f;
+  background-color: #DCDCDC;
+}
+#NameInput {
+  font-family: 'Cabin Sketch', sans-serif;
+  font-size: 20px;
+  color: #2F2F2F;
+}
 button {
-  background-color: #007bff;
-  color: #fff;
+  color: #2F2F2F;
+  font-family: 'Cabin Sketch', sans-serif;
   padding: 0.5rem 1rem;
-  font-size: 16px;
+  font-size: 20px;
   cursor: pointer;
-  border: none;
+  height: 2.95rem;
+  border: 2.5px solid #2F2F2F;
+  background-color: #DCDCDC;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #9F9F9F;
 }
 
 #animeInfoContainer {
   display: none; /* Initially hide the container */
   margin-top: 1rem;
   padding: 1rem;
-  border: 1px solid #ddd;
-  background-color: #fff;
+  border: 5px solid #2F2F2F;
+  background-color: #DCDCDC;
 }
 
 #animeDescription {
@@ -85,7 +112,7 @@ button:hover {
 
 .star:hover,
 .star.active {
-  color: gold;
+  color: #ffd700;
 }
 
 </style>
@@ -94,6 +121,13 @@ document.addEventListener('DOMContentLoaded', function () {
   const NameInput = document.getElementById('NameInput');
   const searchButton = document.getElementById('search');
   const animeInfoContainer = document.getElementById('animeInfoContainer');
+
+    NameInput.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+      // 如果按下的是回车键，触发搜索按钮的点击事件
+      searchButton.click();
+    }
+  });
 
   searchButton.addEventListener('click', function () {
     // Fetch data from the anime search API
@@ -110,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const ratingBox = document.createElement('div');
         ratingBox.id = 'animeRating';
         ratingBox.innerHTML = `
-          <p>Rate this anime:</p>
+          <h3>Rate this anime:</h3>
           <div id="ratingStars">
             <span class="star" data-value="1">&#9733;</span>
             <span class="star" data-value="2">&#9733;</span>
