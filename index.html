@@ -9,15 +9,39 @@
 <body>
     <div class="container">
         <h1>Anime Search:</h1>
-        <div class="myForm" id="myForm">
-            <input id="NameInput" placeholder="Enter the name of an anime">
-            <button id="search">Get</button>
+        <div class="box">
+          <div class="box1">
+            <div class="myForm" id="myForm">
+              <input id="NameInput" placeholder="Enter the name of an anime">
+              <button id="search">Get</button>
+              <div class="animeInfoContainer" id="animeInfoContainer">
+                <div class="animeDescription" id="animeDescription"></div>
+                <br>
+                <img class="animeImage"id="animeImage" src="" alt="AnimeImage">
+              </div>
+          </div>
         </div>
-        <div id="animeInfoContainer">
-          <div id="animeDescription"></div>
-          <br>
-          <img id="animeImage" src="" alt="AnimeImage">
+        <div class="box2">
+          <div class="rating_comments">
+            <div class="ratingContainer" id="ratingContainer">
+              <h3>Rate this anime:</h3>
+              <div class="ratingStars" id="ratingStars">
+                <span class="star" data-value="1">&#9733;</span>
+                <span class="star" data-value="2">&#9733;</span>
+                <span class="star" data-value="3">&#9733;</span>
+                <span class="star" data-value="4">&#9733;</span>
+                <span class="star" data-value="5">&#9733;</span>
+              </div>
+            </div>
+            <div class="commentsContainer" id="commentsContainer">
+              <h3>Comments:</h3>
+              <textarea id="comments" placeholder="Enter your comments"></textarea>
+            </div>
+            <button id="submitComment">Submit</button>
+            <div id="thankYouMessage" style="display: none;">Thank you for your comment!</div>
+          </div>
         </div>
+      </div>
     </div>
 </body>
 </html>
@@ -30,6 +54,7 @@ body {
   padding: 0;
   background-color: #DCDCDC;
 }
+
 h1,h2,h3 {
   color: #2F2F2F;
 }
@@ -37,10 +62,25 @@ p {
   text-align: justify;
   color: #2F2F2F;
 }
-
+.box {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.box1 {
+  flex: 1;
+}
+.box2 {
+    margin-top: 4rem;
+    width: 23rem;
+    height: 35rem;
+    margin-left: 10%;
+    border: 5px solid #2F2F2F;
+}
 .container {
   width: 80%;
-  margin: 2rem auto;
+  margin: 0 auto;
   text-align: center;
 }
 input::placeholder {
@@ -82,7 +122,7 @@ button:hover {
 }
 
 #animeInfoContainer {
-  display: none; /* Initially hide the container */
+  display: none; 
   margin-top: 1rem;
   padding: 1rem;
   border: 5px solid #2F2F2F;
@@ -114,64 +154,82 @@ button:hover {
 .star.active {
   color: #ffd700;
 }
+#comments {
+  width: 250px;
+  height: 250px;
+  box-sizing: border-box;
+}
+
+#submitComment {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #DCDCDC;
+  color: #2F2F2F;
+  cursor: pointer;
+  border: 2.5px solid #2F2F2F;
+}
+
+#submitComment:hover {
+  background-color: #9F9F9F;
+}
+
+#thankYouMessage {
+  font-size: 15px;
+  margin-top: 5px;
+  display: none;
+  color: #2F2F2F;
+}
 
 </style>
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-  const NameInput = document.getElementById('NameInput');
-  const searchButton = document.getElementById('search');
-  const animeInfoContainer = document.getElementById('animeInfoContainer');
-
-  NameInput.addEventListener('keydown', function (event) {
-    if (event.key === 'Enter') {
-      searchAnime();
-    }
-  });
-
-  searchButton.addEventListener('click', searchAnime);
-
-  function searchAnime() {
-    const url = `https://anime-search-8ri2.onrender.com/search-anime?name=${encodeURIComponent(NameInput.value)}`;
-
-    // Fetch data from the anime search API
-    fetch(url)
+   document.addEventListener('DOMContentLoaded', function () {
+    const NameInput = document.getElementById('NameInput');
+    const searchButton = document.getElementById('search');
+    const animeInfoContainer = document.getElementById('animeInfoContainer');
+    const ratingStars = document.querySelectorAll('#ratingStars .star');
+    const commentsTextarea = document.getElementById('comments');
+    const submitCommentButton = document.getElementById('submitComment');
+    const thankYouMessage = document.getElementById('thankYouMessage');
+    
+    NameInput.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter') {
+        searchAnime();
+      }
+    });
+    
+    searchButton.addEventListener('click', searchAnime);
+    ratingStars.forEach(star => {
+      star.addEventListener('click', function () {
+        const rating = parseInt(star.getAttribute('data-value'));
+        ratingStars.forEach(s => s.classList.remove('active'));
+        for (let i = 0; i < rating; i++) {
+          ratingStars[i].classList.add('active');
+        }
+      });
+    });
+    submitCommentButton.addEventListener('click', function () {
+      const comments = commentsTextarea.value.trim();
+      console.log('User comments:', comments);
+      // Display thank you message
+      thankYouMessage.style.display = 'block';
+    });
+    
+    function searchAnime() {
+      const url = `https://anime-search-8ri2.onrender.com/search-anime?name=${encodeURIComponent(NameInput.value)}`;
+      // Fetch data from the anime search API
+      fetch(url)
       .then(response => response.json())
       .then(data => {
-        animeInfoContainer.style.display = 'block'; 
+        animeInfoContainer.style.display = 'block';
         animeInfoContainer.innerHTML = `
-          <h2>${data.title}</h2>
-          <img src="${data.picture}" alt="${data.title}">
-          <p>${data.synopsis}</p>`;
-        const ratingBox = document.createElement('div');
-        ratingBox.id = 'animeRating';
-        ratingBox.innerHTML = `
-          <h3>Rate this anime:</h3>
-          <div id="ratingStars">
-            <span class="star" data-value="1">&#9733;</span>
-            <span class="star" data-value="2">&#9733;</span>
-            <span class="star" data-value="3">&#9733;</span>
-            <span class="star" data-value="4">&#9733;</span>
-            <span class="star" data-value="5">&#9733;</span>
-          </div>`;
-        animeInfoContainer.appendChild(ratingBox);
-
-        const ratingStars = document.querySelectorAll('#ratingStars .star');
-
-        ratingStars.forEach(star => {
-          star.addEventListener('click', function () {
-            const rating = parseInt(star.getAttribute('data-value'));
-
-            ratingStars.forEach(s => s.classList.remove('active'));
-            for (let i = 0; i < rating; i++) {
-              ratingStars[i].classList.add('active');
-            }
-          });
-        });
+        <h2>${data.title}</h2>
+        <img src="${data.picture}" alt="${data.title}">
+        <p>${data.synopsis}</p>`;
       })
       .catch(error => {
         console.error('Error fetching data:', error);
         animeInfoContainer.innerHTML = 'Error fetching data. Please try again later.';
       });
-  }
-});
+    }
+  });
 </script>
